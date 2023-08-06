@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import LinearProgress from '@mui/material/LinearProgress';
+import  CircularProgress from '@mui/material/CircularProgress';
 import { Menu } from '@mui/icons-material';
 import {useAppSelector} from "./store";
 import {RequestStatusType} from "./app-reducer";
@@ -35,6 +36,7 @@ function App() {
                 </Toolbar>
             </AppBar>
             {status === 'loading' && <LinearProgress color={'secondary'}/>}
+            {status === 'loading1' && <CircularProgress color={"secondary"} />}
             <Container fixed>
                 <TodolistsList />
             </Container>
