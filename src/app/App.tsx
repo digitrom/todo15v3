@@ -16,6 +16,7 @@ import  CircularProgress from '@mui/material/CircularProgress';
 import { Menu } from '@mui/icons-material';
 import {useAppSelector} from "./store";
 import {RequestStatusType} from "./app-reducer";
+import {CustomizedSnackbars} from "../components/ErrorSnackbar/ErrorSnackBar";
 
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
             <Container fixed>
                 <TodolistsList />
             </Container>
+            <CustomizedSnackbars/>
         </div>
     )
 }

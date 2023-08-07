@@ -2,7 +2,7 @@ import {AddTodolistActionType, RemoveTodolistActionType, SetTodolistsActionType}
 import {TaskPriorities, TaskStatuses, TaskType, todolistsAPI, UpdateTaskModelType} from '../../api/todolists-api'
 import {Dispatch} from 'redux'
 import {AppRootStateType} from '../../app/store'
-import {setStatusAC, setStatusACType} from "../../app/app-reducer";
+import {setErrorAC, setErrorACType, setStatusAC, setStatusACType} from "../../app/app-reducer";
 
 const initialState: TasksStateType = {}
 
@@ -59,21 +59,27 @@ export const fetchTasksTC = (todolistId: string) => (dispatch: Dispatch<ActionsT
             dispatch(setStatusAC('succeeded'))
         })
 }
+export const addTaskTC = (title: string, todolistId: string) => (dispatch: Dispatch<ActionsType>) => {
+    dispatch(setStatusAC('loading1'))
+    todolistsAPI.createTask(todolistId, title)
+        .then(res => {
+            if (res.data.resultCode === 0) {
+                const task = res.data.data.item
+                const action = addTaskAC(task)
+                dispatch(action)
+                dispatch(setStatusAC('succeeded'))
+            } else {
+                const error = res.data.messages[0]
+                error ? dispatch(setErrorAC(error)) : dispatch(setErrorAC('Some error'))
+                dispatch(setStatusAC('failed'))
+            }
+        })
+}
 export const removeTaskTC = (taskId: string, todolistId: string) => (dispatch: Dispatch<ActionsType>) => {
     dispatch(setStatusAC('loading1'))
     todolistsAPI.deleteTask(todolistId, taskId)
         .then(res => {
             const action = removeTaskAC(taskId, todolistId)
-            dispatch(action)
-            dispatch(setStatusAC('succeeded'))
-        })
-}
-export const addTaskTC = (title: string, todolistId: string) => (dispatch: Dispatch<ActionsType>) => {
-    dispatch(setStatusAC('loading1'))
-    todolistsAPI.createTask(todolistId, title)
-        .then(res => {
-            const task = res.data.data.item
-            const action = addTaskAC(task)
             dispatch(action)
             dispatch(setStatusAC('succeeded'))
         })
@@ -127,4 +133,5 @@ type ActionsType =
     | RemoveTodolistActionType
     | SetTodolistsActionType
     | ReturnType<typeof setTasksAC>
-| setStatusACType
+    | setStatusACType
+    | setErrorACType
